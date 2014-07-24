@@ -4,7 +4,7 @@ subtitle    :
 author      : asheshwor
 job         : boj
 framework   : html5slides
-theme       : uulm
+theme       : default # {uulm}
 highlighter : highlight.js  # {highlight.js, prettify, highlight}
 hitheme     : monokai      # 
 widgets     : []            # {mathjax, quiz, bootstrap}
@@ -16,11 +16,11 @@ knit        : slidify::knit2slides
 
 **Visualizing international migration flows using UN migrants stock data**
 
-This app visualizes internal migration flows to and from regions using the UN **2013 stock migrants data** by connecting migrant's origin with destination with great circle lines. The origins and destinations of the arcs are coloured differently to visualize the direction of movement.
+This app visualizes internal migration flows to and from regions using the **UN stock migrants data for 2013**, by connecting migrant's origin with destination with great circle lines. The origins and destinations of the arcs are coloured differently to visualize the direction of movement.
 
 The number of arcs are based on the log of the migrant stock.
 
-It's very easy to use the app, just select the region or country from the drop down box to update the map and data output. **That's it!**
+It's very easy to use, just select the region from the drop down box to update the map and data output. **That's it!**
 
 **Try it:** https://asheshwor.shinyapps.io/migrationviz/
 
@@ -28,7 +28,7 @@ It's very easy to use the app, just select the region or country from the drop d
 
 ## Source of data
 
-Reading migration data from excel file
+Reading migration data from excel file:
 
 
 ```r
@@ -41,7 +41,7 @@ readMigrationTable <- function() {
   }
 ```
 
-Reading world map shape file and cities database.
+Reading world map shape file and cities database:
 
 
 ```r
@@ -54,6 +54,7 @@ Reading world map shape file and cities database.
 --- .class #id bg:#F0F0F0
 
 ## Getting data for the selected region in long format
+
 With some processing and matching with proper names the data is like this with selected country as Malaysia:
 
 
@@ -80,21 +81,16 @@ The coordinates for the migrants' origin and destination are same for each locat
 --- .class #id bg:#F0F0F0
 
 ## Selecting origin and destination points
-To select the location, the data is sorted by location and the getRandomCity function retrives a dataframe with the specified number of cities in the selected region with probability of selection based on the city population.
+To select the location, the data is sorted by location and the ```getRandomCity``` function retrives a dataframe with the specified number of cities in the selected region with probability of selection based on the city population.
 
 
 ```r
-  getRandomCity <- function(xcountry = "AU", xnum=1) {
-    #selects city based on weighted probality
-    allCities <- places.df[places.df$code == xcountry,]
-    allCities <- allCities[order(allCities$pop),] #sort
-    if (nrow(allCities) == 0) {return(data.frame(lon=rep(NA, xnum),
-                                                 lat=rep(NA, xnum),
-                                                 code=rep("XY", xnum)))}
-    selection <- sample(c(1:nrow(allCities)), xnum, replace=TRUE, prob=allCities$pop)
-    return(allCities[selection,])
-  }
+sample(c(1:nrow(allCities)), num, replace=TRUE, prob=allCities$pop)
 ```
+
+![More populated cities are more likely to get selected](pictures/australia.jpg)
+
+Cities with higher population are more likely to get selected.
 
 --- .class #id bg:#F0F0F0
 
@@ -103,7 +99,7 @@ using ```gcIntermediate``` function, the coordinates of the lines forming the gr
 
 <img src="assets/fig/final-plot.png" title="plot of chunk final-plot" alt="plot of chunk final-plot" style="display: block; margin: auto;" />
 
-**Try it yourself at ** https://asheshwor.shinyapps.io/migrationviz/
+Try it yourself at https://asheshwor.shinyapps.io/migrationviz/
 
-** Thank you! **
+**Thank you!**
 

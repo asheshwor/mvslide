@@ -18,11 +18,11 @@
   <h3>Migrationviz</h3>
   <p><strong>Visualizing international migration flows using UN migrants stock data</strong></p>
 
-<p>This app visualizes internal migration flows to and from regions using the UN <strong>2013 stock migrants data</strong> by connecting migrant&#39;s origin with destination with great circle lines. The origins and destinations of the arcs are coloured differently to visualize the direction of movement.</p>
+<p>This app visualizes internal migration flows to and from regions using the <strong>UN stock migrants data for 2013</strong>, by connecting migrant&#39;s origin with destination with great circle lines. The origins and destinations of the arcs are coloured differently to visualize the direction of movement.</p>
 
 <p>The number of arcs are based on the log of the migrant stock.</p>
 
-<p>It&#39;s very easy to use the app, just select the region or country from the drop down box to update the map and data output. <strong>That&#39;s it!</strong></p>
+<p>It&#39;s very easy to use, just select the region from the drop down box to update the map and data output. <strong>That&#39;s it!</strong></p>
 
 <p><strong>Try it:</strong> <a href="https://asheshwor.shinyapps.io/migrationviz/">https://asheshwor.shinyapps.io/migrationviz/</a></p>
 
@@ -30,7 +30,7 @@
 
 <article class="class" id="id" style="background:#F0F0F0;">
   <h3>Source of data</h3>
-  <p>Reading migration data from excel file</p>
+  <p>Reading migration data from excel file:</p>
 
 <pre><code class="r">dataloc &lt;- &quot;data/UN_MigrantStockByOriginAndDestination_2013.xls&quot;
 readMigrationTable &lt;- function() {
@@ -41,7 +41,7 @@ readMigrationTable &lt;- function() {
   }
 </code></pre>
 
-<p>Reading world map shape file and cities database.</p>
+<p>Reading world map shape file and cities database:</p>
 
 <pre><code class="r">  # read world shapefile downloaded from NaturalEarthData.com
   wmap &lt;- readShapeSpatial(&quot;data/110m_cultural/ne_110m_admin_0_countries.shp&quot;)
@@ -77,19 +77,14 @@ readMigrationTable &lt;- function() {
 
 <article class="class" id="id" style="background:#F0F0F0;">
   <h3>Selecting origin and destination points</h3>
-  <p>To select the location, the data is sorted by location and the getRandomCity function retrives a dataframe with the specified number of cities in the selected region with probability of selection based on the city population.</p>
+  <p>To select the location, the data is sorted by location and the <code>getRandomCity</code> function retrives a dataframe with the specified number of cities in the selected region with probability of selection based on the city population.</p>
 
-<pre><code class="r">  getRandomCity &lt;- function(xcountry = &quot;AU&quot;, xnum=1) {
-    #selects city based on weighted probality
-    allCities &lt;- places.df[places.df$code == xcountry,]
-    allCities &lt;- allCities[order(allCities$pop),] #sort
-    if (nrow(allCities) == 0) {return(data.frame(lon=rep(NA, xnum),
-                                                 lat=rep(NA, xnum),
-                                                 code=rep(&quot;XY&quot;, xnum)))}
-    selection &lt;- sample(c(1:nrow(allCities)), xnum, replace=TRUE, prob=allCities$pop)
-    return(allCities[selection,])
-  }
+<pre><code class="r">sample(c(1:nrow(allCities)), num, replace=TRUE, prob=allCities$pop)
 </code></pre>
+
+<p><img src="pictures/australia.jpg" alt="More populated cities are more likely to get selected"></p>
+
+<p>Cities with higher population are more likely to get selected.</p>
 
 </article>
 
@@ -99,9 +94,9 @@ readMigrationTable &lt;- function() {
 
 <p><img src="assets/fig/final-plot.png" title="plot of chunk final-plot" alt="plot of chunk final-plot" style="display: block; margin: auto;" /></p>
 
-<p>*<em>Try it yourself at *</em> <a href="https://asheshwor.shinyapps.io/migrationviz/">https://asheshwor.shinyapps.io/migrationviz/</a></p>
+<p>Try it yourself at <a href="https://asheshwor.shinyapps.io/migrationviz/">https://asheshwor.shinyapps.io/migrationviz/</a></p>
 
-<p>** Thank you! **</p>
+<p><strong>Thank you!</strong></p>
 
 </article>
 
