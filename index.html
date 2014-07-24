@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<title>Visualizing international migration flows</title>
+	<meta name="description" content="Visualizing international migration flows">
+	<meta name="author" content="asheshwor">
+	<meta name="generator" content="slidify" />
+	
+	<!-- LOAD STYLE SHEETS -->
+	<link rel="stylesheet" href="libraries/frameworks/html5slides/default/styles.css">
+	<link rel="stylesheet" href="libraries/highlighters/highlight.js/css/monokai.css" />  <link rel="stylesheet" href = "assets/css/ribbons.css">
+  
+</head>
+<body style='display: none'>
+	<section class='slides layout-regular template-regular'>
+     <article class="" id="slide-1" style="background:;">
+  <h3>Migrationviz</h3>
+  <p><strong>Visualizing international migration flows using UN migrants stock data</strong></p>
+
+<p>This app visualizes internal migration flows to and from regions using the UN <strong>2013 stock migrants data</strong> by connecting migrant&#39;s origin with destination with great circle lines. The origins and destinations of the arcs are coloured differently to visualize the direction of movement.</p>
+
+<p>The number of arcs are based on the log of the migrant stock.</p>
+
+<p>It&#39;s very easy to use the app, just select the region or country from the drop down box to update the map and data output. <strong>That&#39;s it!</strong></p>
+
+<p><strong>Try it:</strong> <a href="https://asheshwor.shinyapps.io/migrationviz/">https://asheshwor.shinyapps.io/migrationviz/</a></p>
+
+</article>
+
+<article class="class" id="id" style="background:#F0F0F0;">
+  <h3>Source of data</h3>
+  <p>Reading migration data from excel file</p>
+
+<pre><code class="r">dataloc &lt;- &quot;data/UN_MigrantStockByOriginAndDestination_2013.xls&quot;
+readMigrationTable &lt;- function() {
+    data &lt;- read.xlsx2(dataloc, sheetName = sheetName, startRow = 16,
+                       colIndex = c(2, 4 , 10:241),
+                       colClasses = c(&quot;character&quot;, rep(&quot;numeric&quot;, 232))) #read excel sheet selected columns and rows
+    return(data)
+  }
+</code></pre>
+
+<p>Reading world map shape file and cities database.</p>
+
+<pre><code class="r">  # read world shapefile downloaded from NaturalEarthData.com
+  wmap &lt;- readShapeSpatial(&quot;data/110m_cultural/ne_110m_admin_0_countries.shp&quot;)
+  # read cities database downloaded from geonames.org
+  places &lt;- read.csv(&quot;data/cities1000.csv&quot;, header=FALSE, stringsAsFactors=FALSE)
+</code></pre>
+
+</article>
+
+<article class="class" id="id" style="background:#F0F0F0;">
+  <h3>Getting data for the selected region in long format</h3>
+  <p>With some processing and matching with proper names the data is like this with selected country as Malaysia:</p>
+
+<pre><code>##   source destination stock lat.d lon.d lat.s lon.s stocklog id
+## 1     AF          MY   492   4.8   103    33    65        6  1
+## 2     AF          MY   492   4.8   103    33    65        6  1
+## 3     AF          MY   492   4.8   103    33    65        6  1
+## 4     AF          MY   492   4.8   103    33    65        6  1
+## 5     AF          MY   492   4.8   103    33    65        6  1
+</code></pre>
+
+<pre><code>##     source destination stock lat.d lon.d lat.s lon.s stocklog  id
+## 626     VN          MY 85709   4.8   103    16   106       11 100
+## 627     VN          MY 85709   4.8   103    16   106       11 100
+## 628     VN          MY 85709   4.8   103    16   106       11 100
+## 629     VN          MY 85709   4.8   103    16   106       11 100
+## 630     VN          MY 85709   4.8   103    16   106       11 100
+</code></pre>
+
+<p>The coordinates for the migrants&#39; origin and destination are same for each location. In next step, the coordinates will be replaced with locations of cities in the region rather than one fixed coordination for the entire region.</p>
+
+</article>
+
+<article class="class" id="id" style="background:#F0F0F0;">
+  <h3>Selecting origin and destination points</h3>
+  <p>To select the location, the data is sorted by location and the getRandomCity function retrives a dataframe with the specified number of cities in the selected region with probability of selection based on the city population.</p>
+
+<pre><code class="r">  getRandomCity &lt;- function(xcountry = &quot;AU&quot;, xnum=1) {
+    #selects city based on weighted probality
+    allCities &lt;- places.df[places.df$code == xcountry,]
+    allCities &lt;- allCities[order(allCities$pop),] #sort
+    if (nrow(allCities) == 0) {return(data.frame(lon=rep(NA, xnum),
+                                                 lat=rep(NA, xnum),
+                                                 code=rep(&quot;XY&quot;, xnum)))}
+    selection &lt;- sample(c(1:nrow(allCities)), xnum, replace=TRUE, prob=allCities$pop)
+    return(allCities[selection,])
+  }
+</code></pre>
+
+</article>
+
+<article class="class" id="id" style="background:#F0F0F0;">
+  <h3>Generating the final map</h3>
+  <p>using <code>gcIntermediate</code> function, the coordinates of the lines forming the great circles are generated which is plotted using <code>ggplot2</code>. Below is an example plot for Malaysia with &#39;light&#39; map theme.</p>
+
+<p><img src="assets/fig/final-plot.png" title="plot of chunk final-plot" alt="plot of chunk final-plot" style="display: block; margin: auto;" /></p>
+
+<p>*<em>Try it yourself at *</em> <a href="https://asheshwor.shinyapps.io/migrationviz/">https://asheshwor.shinyapps.io/migrationviz/</a></p>
+
+<p>** Thank you! **</p>
+
+</article>
+
+  </section>
+</body>
+  <!-- LOAD JAVASCRIPTS  -->
+	<script src='libraries/frameworks/html5slides/default/slides.js'></script>
+	<!-- LOAD HIGHLIGHTER JS FILES -->
+	<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	<!-- DONE LOADING HIGHLIGHTER JS FILES -->
+	 
+	</html>
