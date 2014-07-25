@@ -59,25 +59,25 @@ Reading world map shape file and cities database:
 
 ## 3 | Data processing
 
-With some processing, a data-frame with all computed connections is created. Following is an example for Malaysia:
+With some processing, a data-frame with all computed connections is created. Following is an example for Australia:
 
 
 ```
 ##   source destination stock lat.d lon.d lat.s lon.s stocklog id
-## 1     AF          MY   492   4.8   103    33    65        6  1
-## 2     AF          MY   492   4.8   103    33    65        6  1
-## 3     AF          MY   492   4.8   103    33    65        6  1
-## 4     AF          MY   492   4.8   103    33    65        6  1
-## 5     AF          MY   492   4.8   103    33    65        6  1
+## 1     AD          AU    22   -27   133  42.5   1.5        3  1
+## 2     AD          AU    22   -27   133  42.5   1.5        3  1
+## 3     AD          AU    22   -27   133  42.5   1.5        3  1
+## 4     AE          AU  5890   -27   133  24.0  54.0        9  2
+## 5     AE          AU  5890   -27   133  24.0  54.0        9  2
 ```
 
 ```
-##     source destination stock lat.d lon.d lat.s lon.s stocklog  id
-## 626     VN          MY 85709   4.8   103    16   106       11 100
-## 627     VN          MY 85709   4.8   103    16   106       11 100
-## 628     VN          MY 85709   4.8   103    16   106       11 100
-## 629     VN          MY 85709   4.8   103    16   106       11 100
-## 630     VN          MY 85709   4.8   103    16   106       11 100
+##      source destination stock lat.d lon.d lat.s lon.s stocklog  id
+## 2359     ZW          AU 34034   -27   133   -20    30       10 349
+## 2360     ZW          AU 34034   -27   133   -20    30       10 349
+## 2361     ZW          AU 34034   -27   133   -20    30       10 349
+## 2362     ZW          AU 34034   -27   133   -20    30       10 349
+## 2363     ZW          AU 34034   -27   133   -20    30       10 349
 ```
 
 In the next step, the repeating coordinates are replaced with locations of cities in the region.
@@ -103,7 +103,7 @@ Finally the arc segments from obtained using ```gcIntermediate``` function are a
 
 <img src="assets/fig/final-plot.png" title="plot of chunk final-plot" alt="plot of chunk final-plot" style="display: block; margin: auto;" />
 
-<center><small>An example plot for Malaysia with 'light' map theme</small></center>
+<center><small>An example plot for Australia with 'light' map theme</small></center>
 
 Try it yourself at https://asheshwor.shinyapps.io/migrationviz/
 
