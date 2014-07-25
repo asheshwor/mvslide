@@ -4,7 +4,7 @@ subtitle    :
 author      : asheshwor
 job         : boj
 framework   : html5slides
-theme       : default # {uulm}
+theme       : uulm # {uulm}
 highlighter : highlight.js  # {highlight.js, prettify, highlight}
 hitheme     : monokai      # 
 widgets     : []            # {mathjax, quiz, bootstrap}
@@ -12,21 +12,25 @@ mode        : selfcontained
 knit        : slidify::knit2slides
 ---
 
-## Migrationviz
+## 1 | Shiny app pitch introduction
 
 **Visualizing international migration flows using UN migrants stock data**
 
-This app visualizes internal migration flows to and from regions using the **UN stock migrants data for 2013**, by connecting migrant's origin with destination with great circle lines. The origins and destinations of the arcs are coloured differently to visualize the direction of movement.
+This is for visualizing international migration flows to and from a selected region using the **UN migrants stock data for 2013**.
 
-The number of arcs are based on the log of the migrant stock.
+Colors to visualize direction of movement ad number of arcs to visualize size of movement.
 
-It's very easy to use, just select the region from the drop down box to update the map and data output. **That's it!**
+It's very easy to use, just select the region from the drop-down box to
+update the map and data output. **That's it!**
 
-**Try it:** https://asheshwor.shinyapps.io/migrationviz/
+**Give it a try:** https://asheshwor.shinyapps.io/migrationviz/
+
+<center>![Shiny app screenshot](pictures/screenshot.jpg)
+<small>Screenshot of options</small></center>
 
 --- .class #id bg:#F0F0F0
 
-## Source of data
+## 2 | Source of data
 
 Reading migration data from excel file:
 
@@ -53,9 +57,9 @@ Reading world map shape file and cities database:
 
 --- .class #id bg:#F0F0F0
 
-## Getting data for the selected region in long format
+## 3 | Data processing
 
-With some processing and matching with proper names the data is like this with selected country as Malaysia:
+With some processing, a data-frame with all computed connections is created. Following is an example for Malaysia:
 
 
 ```
@@ -76,28 +80,30 @@ With some processing and matching with proper names the data is like this with s
 ## 630     VN          MY 85709   4.8   103    16   106       11 100
 ```
 
-The coordinates for the migrants' origin and destination are same for each location. In next step, the coordinates will be replaced with locations of cities in the region rather than one fixed coordination for the entire region.
+In the next step, the repeating coordinates are replaced with locations of cities in the region.
 
 --- .class #id bg:#F0F0F0
 
-## Selecting origin and destination points
-To select the location, the data is sorted by location and the ```getRandomCity``` function retrives a dataframe with the specified number of cities in the selected region with probability of selection based on the city population.
+## 4 | Selecting origin and destination points
+To select the location, the data is sorted by location and the ```getRandomCity``` function retrieves a data-frame with the specified number of cities in the selected region with probability of selection based on population.
 
 
 ```r
 sample(c(1:nrow(allCities)), num, replace=TRUE, prob=allCities$pop)
 ```
 
-![More populated cities are more likely to get selected](pictures/australia.jpg)
-
-Cities with higher population are more likely to get selected.
+<center>![More populated cities are more likely to get selected](pictures/australia.jpg)</center>
+<center><small>Cities with higher population are more likely to get selected</small></center>
 
 --- .class #id bg:#F0F0F0
 
-## Generating the final map
-using ```gcIntermediate``` function, the coordinates of the lines forming the great circles are generated which is plotted using ```ggplot2```. Below is an example plot for Malaysia with 'light' map theme.
+## 5 | Generating the final map
+
+Finally the arc segments from obtained using ```gcIntermediate``` function are and plotted using ```ggplot2```.
 
 <img src="assets/fig/final-plot.png" title="plot of chunk final-plot" alt="plot of chunk final-plot" style="display: block; margin: auto;" />
+
+<center><small>An example plot for Malaysia with 'light' map theme</small></center>
 
 Try it yourself at https://asheshwor.shinyapps.io/migrationviz/
 
