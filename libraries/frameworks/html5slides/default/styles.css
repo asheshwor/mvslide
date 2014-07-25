@@ -34,11 +34,14 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
 
-  background: rgb(215, 215, 215);
-  background: -o-radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));
-  background: -moz-radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));
-  background: -webkit-radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));
-  background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 500, from(rgb(240, 240, 240)), to(rgb(190, 190, 190)));
+  background: #add9e4;
+  background: -moz-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #f7fbfc), color-stop(100%, #add9e4));
+  background: -webkit-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
+  background: -o-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
+  background: -ms-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
+  background: radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
+  background-color: #f7fbfc; 
 
   -webkit-font-smoothing: antialiased;
 }
@@ -81,7 +84,7 @@ body {
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
 
-  background-color: white;
+  background-color: #F0F0F0;
 
   box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
   border: 1px solid rgba(0, 0, 0, .3);
@@ -301,16 +304,19 @@ a:hover {
 p {
   margin: 0;
   padding: 0;
+    color: black;
+  margin-top: 10px;
 
-  margin-top: 20px;
 }
 p:first-child {
   margin-top: 0;
+
 }
 
 h1 {
-  font-size: 60px;
+  font-size: 80px;
   line-height: 60px;
+    text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
 
   padding: 0;
   margin: 0;
@@ -321,12 +327,13 @@ h1 {
 
   letter-spacing: -3px;
 
-  color: rgb(51, 51, 51);
+  color: rgb(0, 0, 0);
 }
 
 h2 {
   font-size: 45px;
   line-height: 45px;
+    text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
 
   position: absolute;
   bottom: 150px;
@@ -343,18 +350,18 @@ h2 {
 }
 
 h3 {
-  font-size: 30px;
+  font-size: 40px;
   line-height: 36px;
-
+    text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
   padding: 0;
   margin: 0;
   padding-right: 40px;
-
+    padding-bottom: 10px;
   font-weight: 600;
 
   letter-spacing: -1px;
 
-  color: rgb(51, 51, 51);
+  color: rgb(0, 0, 0);
 }
 
 article.fill h3 {
@@ -468,9 +475,18 @@ article.fill img {
   z-index: -1;
 }
 
-img.centered {
+img {
   margin: 0 auto;
   display: block;
+      margin: 0px 0px;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+  -webkit-transition: all .2s linear;
+  -moz-transition: all .2s linear;
+  -ms-transition: all .2s linear;
+  -o-transition: all .2s linear;
+  transition: all .2s linear;
+    align-self: center;
 }
 
 table {
