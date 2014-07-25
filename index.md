@@ -16,14 +16,14 @@ knit        : slidify::knit2slides
 
 **Visualizing international migration flows using UN migrants stock data**
 
-This is for visualizing international migration flows to and from a selected region using the **UN migrants stock data for 2013**.
+This is for visualizing international migration flows to and from a selected region using **UN migrants stock data**.
 
-Colors to visualize direction of movement ad number of arcs to visualize size of movement.
+Colors to visualize direction of movement, and number of arcs to visualize size of movement.
 
-It's very easy to use, just select the region from the drop-down box to
-update the map and data output. **That's it!**
+It's very easy to use, just select the region, theme, year to
+update the output. **That's it!**
 
-**Give it a try:** https://asheshwor.shinyapps.io/migrationviz/
+**Try it live at** https://asheshwor.shinyapps.io/migrationviz/
 
 <center>![App screenshot](pictures/screenshot.jpg)
 <small>Screenshot of options</small></center>
