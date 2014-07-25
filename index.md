@@ -2,7 +2,7 @@
 title       : Visualizing international migration flows
 subtitle    : 
 author      : asheshwor
-job         : boj
+job         : ninja
 framework   : html5slides
 theme       : uulm # {uulm}
 highlighter : highlight.js  # {highlight.js, prettify, highlight}
@@ -25,7 +25,7 @@ update the map and data output. **That's it!**
 
 **Give it a try:** https://asheshwor.shinyapps.io/migrationviz/
 
-<center>![Shiny app screenshot](pictures/screenshot.jpg)
+<center>![App screenshot](pictures/screenshot.jpg)
 <small>Screenshot of options</small></center>
 
 --- .class #id bg:#F0F0F0
