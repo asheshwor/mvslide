@@ -1,4 +1,4 @@
-/*
+ /*
   Google HTML5 slides template
 
   Authors: Luke Mah?? (code)
@@ -378,9 +378,10 @@ article.fill h3 {
 ul {
   list-style: square;
   margin: 0;
-  padding: 2;
-  margin-top: 40px;
-  margin-left: .75em;
+  padding: .5;
+  margin-top: 15px;
+  margin-left: .25em;
+    color: rgb(0, 0, 0);
 }
 
 ul:first-child {

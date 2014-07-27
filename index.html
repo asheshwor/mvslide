@@ -15,49 +15,45 @@
 <body style='display: none'>
 	<section class='slides layout-regular template-regular'>
      <article class="" id="slide-1" style="background:;">
-  <h3>1 | Shiny app pitch introduction</h3>
-  <p><strong>Visualizing international migration flows using UN migrants stock data</strong></p>
+  <h3>1 | Shiny app pitch - introduction</h3>
+  <ul>
+<li><p>A shiny app for visualizing international migration flows to and from a region using UN migrants stock data.</p></li>
+<li><p>Colors to visualize direction of movement, and number of arcs to visualize size of movement.</p></li>
+<li><p>It&#39;s very easy to use, just select the region, theme, year to update the output. That&#39;s it!</p></li>
+</ul>
 
-<p>This is for visualizing international migration flows to and from a selected region using <strong>UN migrants stock data</strong>.</p>
-
-<p>Colors to visualize direction of movement, and number of arcs to visualize size of movement.</p>
-
-<p>It&#39;s very easy to use, just select the region, theme, year to
-update the output. <strong>That&#39;s it!</strong></p>
-
-<p><strong>Try it live at</strong> <a href="https://asheshwor.shinyapps.io/migrationviz/">https://asheshwor.shinyapps.io/migrationviz/</a></p>
+<p><center><strong>Try it at</strong> <a href="https://asheshwor.shinyapps.io/migrationviz/">https://asheshwor.shinyapps.io/migrationviz/</a></center></p>
 
 <p><center><img src="pictures/screenshot.jpg" alt="App screenshot">
 <small>Screenshot of options</small></center></p>
 
+<pre align='right'><small>@asheshwor | 2014-07-27 </small></pre>
+
 </article>
 
 <article class="class" id="id" style="background:#F0F0F0;">
-  <h3>2 | Source of data</h3>
-  <p>Reading migration data from excel file:</p>
+  <h3>2 | Getting the data</h3>
+  <ul>
+<li><p>The migration data was obtained from <a href="http://esa.un.org/unmigration/TIMSA2013/data/UN_MigrantStock_2013.xls">United Nations, Department of Economic and Social Affairs, Population Division</a></p></li>
+<li><p>The world map shape file was obtained from <a href="naturalearthdata.com">NaturalEarthData.com</a>. The location and population of cities were obtained from the cities database at <a href="geonames.org">geonames.org</a></p></li>
+<li><p>Code for reading migration data, world map shape file and cities database:</p></li>
+</ul>
 
-<pre><code class="r">dataloc &lt;- &quot;data/UN_MigrantStockByOriginAndDestination_2013.xls&quot;
-readMigrationTable &lt;- function() {
-    data &lt;- read.xlsx2(dataloc, sheetName = sheetName, startRow = 16,
-                       colIndex = c(2, 4 , 10:241),
-                       colClasses = c(&quot;character&quot;, rep(&quot;numeric&quot;, 232))) #read excel sheet selected columns and rows
-    return(data)
-  }
-</code></pre>
-
-<p>Reading world map shape file and cities database:</p>
-
-<pre><code class="r">  # read world shapefile downloaded from NaturalEarthData.com
-  wmap &lt;- readShapeSpatial(&quot;data/110m_cultural/ne_110m_admin_0_countries.shp&quot;)
-  # read cities database downloaded from geonames.org
-  places &lt;- read.csv(&quot;data/cities1000.csv&quot;, header=FALSE, stringsAsFactors=FALSE)
+<pre><code class="r">data2013 &lt;- read.xlsx2(&quot;data/UN_MigrantStockByOriginAndDestination_2013.xls&quot;,
+                       sheetName = &quot;Table 10&quot;,
+                       startRow = 16, colIndex = c(2, 4 , 10:241),
+                       colClasses = c(&quot;character&quot;, rep(&quot;numeric&quot;, 232)))
+wmap &lt;- readShapeSpatial(&quot;data/110m_cultural/ne_110m_admin_0_countries.shp&quot;)
+places &lt;- read.csv(&quot;data/cities1000.csv&quot;, header=FALSE, stringsAsFactors=FALSE)
 </code></pre>
 
 </article>
 
 <article class="class" id="id" style="background:#F0F0F0;">
   <h3>3 | Data processing</h3>
-  <p>With some processing, a data-frame with all computed connections is created. Following is an example for Australia:</p>
+  <ul>
+<li>With some processing, a data-frame with the required arc connections is created. Following is an example a section of the dataframe for Australia</li>
+</ul>
 
 <pre><code>##   source destination stock lat.d lon.d lat.s lon.s stocklog id
 ## 1     AD          AU    22   -27   133  42.5   1.5        3  1
@@ -65,26 +61,23 @@ readMigrationTable &lt;- function() {
 ## 3     AD          AU    22   -27   133  42.5   1.5        3  1
 ## 4     AE          AU  5890   -27   133  24.0  54.0        9  2
 ## 5     AE          AU  5890   -27   133  24.0  54.0        9  2
+## 6     AE          AU  5890   -27   133  24.0  54.0        9  2
+## 7     AE          AU  5890   -27   133  24.0  54.0        9  2
+## 8     AE          AU  5890   -27   133  24.0  54.0        9  2
 </code></pre>
 
-<pre><code>##      source destination stock lat.d lon.d lat.s lon.s stocklog  id
-## 2359     ZW          AU 34034   -27   133   -20    30       10 349
-## 2360     ZW          AU 34034   -27   133   -20    30       10 349
-## 2361     ZW          AU 34034   -27   133   -20    30       10 349
-## 2362     ZW          AU 34034   -27   133   -20    30       10 349
-## 2363     ZW          AU 34034   -27   133   -20    30       10 349
-</code></pre>
-
-<p>In the next step, the repeating coordinates are replaced with locations of cities in the region.</p>
+<ul>
+<li>In the next step, the source and destination coordinates are replaced with locations of cities in the from the country or region.</li>
+</ul>
 
 </article>
 
 <article class="class" id="id" style="background:#F0F0F0;">
-  <h3>4 | Selecting origin and destination points</h3>
-  <p>To select the location, the data is sorted by location and the <code>getRandomCity</code> function retrieves a data-frame with the specified number of cities in the selected region with probability of selection based on population.</p>
-
-<pre><code class="r">sample(c(1:nrow(allCities)), num, replace=TRUE, prob=allCities$pop)
-</code></pre>
+  <h3>4 | Migrant origin and destination points</h3>
+  <ul>
+<li><p>The coordinates for each origin or destination in a region are sampled from 15 most populated cities in that region with probability based on the population.</p></li>
+<li><p>Since the sampling is done at random, the map generated each time is different.</p></li>
+</ul>
 
 <p><center><img src="pictures/australia.jpg" alt="More populated cities are more likely to get selected"></center>
 <center><small>Cities with higher population are more likely to get selected</small></center></p>
@@ -93,15 +86,15 @@ readMigrationTable &lt;- function() {
 
 <article class="class" id="id" style="background:#F0F0F0;">
   <h3>5 | Generating the final map</h3>
-  <p>Finally the arc segments from obtained using <code>gcIntermediate</code> function are and plotted using <code>ggplot2</code>.</p>
+  <ul>
+<li>Finally the great circle arcs obtained using <code>gcIntermediate</code> function are and plotted using <code>ggplot2</code> over the world map.</li>
+</ul>
 
 <p><img src="assets/fig/final-plot.png" title="plot of chunk final-plot" alt="plot of chunk final-plot" style="display: block; margin: auto;" /></p>
 
 <p><center><small>An example plot for Australia with &#39;light&#39; map theme</small></center></p>
 
-<p>Try it yourself at <a href="https://asheshwor.shinyapps.io/migrationviz/">https://asheshwor.shinyapps.io/migrationviz/</a></p>
-
-<p><strong>Thank you!</strong></p>
+<p><center>Try the app at <a href="https://asheshwor.shinyapps.io/migrationviz/">https://asheshwor.shinyapps.io/migrationviz/</a></center></p>
 
 </article>
 

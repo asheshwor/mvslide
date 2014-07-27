@@ -1,6 +1,6 @@
 ---
 title       : Visualizing international migration flows
-subtitle    : 
+subtitle    : Coursera - Developing Data Products course
 author      : asheshwor
 job         : ninja
 framework   : html5slides
@@ -12,52 +12,44 @@ mode        : selfcontained
 knit        : slidify::knit2slides
 ---
 
-## 1 | Shiny app pitch introduction
+## 1 | Shiny app pitch - introduction
 
-**Visualizing international migration flows using UN migrants stock data**
+* A shiny app for visualizing international migration flows to and from a region using UN migrants stock data.
 
-This is for visualizing international migration flows to and from a selected region using **UN migrants stock data**.
+* Colors to visualize direction of movement, and number of arcs to visualize size of movement.
 
-Colors to visualize direction of movement, and number of arcs to visualize size of movement.
+* It's very easy to use, just select the region, theme, year to update the output. That's it!
 
-It's very easy to use, just select the region, theme, year to
-update the output. **That's it!**
-
-**Try it live at** https://asheshwor.shinyapps.io/migrationviz/
+<center>**Try it at** https://asheshwor.shinyapps.io/migrationviz/</center>
 
 <center>![App screenshot](pictures/screenshot.jpg)
 <small>Screenshot of options</small></center>
+<pre align='right'><small>@asheshwor | 2014-07-27 </small></pre>
 
 --- .class #id bg:#F0F0F0
 
-## 2 | Source of data
+## 2 | Getting the data
 
-Reading migration data from excel file:
+* The migration data was obtained from [United Nations, Department of Economic and Social Affairs, Population Division] (http://esa.un.org/unmigration/TIMSA2013/data/UN_MigrantStock_2013.xls)
 
-```{r read-fun, eval=FALSE}
-dataloc <- "data/UN_MigrantStockByOriginAndDestination_2013.xls"
-readMigrationTable <- function() {
-    data <- read.xlsx2(dataloc, sheetName = sheetName, startRow = 16,
-                       colIndex = c(2, 4 , 10:241),
-                       colClasses = c("character", rep("numeric", 232))) #read excel sheet selected columns and rows
-    return(data)
-  }
-```
+* The world map shape file was obtained from [NaturalEarthData.com] (naturalearthdata.com). The location and population of cities were obtained from the cities database at [geonames.org] (geonames.org)
 
-Reading world map shape file and cities database:
+* Code for reading migration data, world map shape file and cities database:
 
 ```{r read-data, eval=FALSE}
-  # read world shapefile downloaded from NaturalEarthData.com
-  wmap <- readShapeSpatial("data/110m_cultural/ne_110m_admin_0_countries.shp")
-  # read cities database downloaded from geonames.org
-  places <- read.csv("data/cities1000.csv", header=FALSE, stringsAsFactors=FALSE)
+data2013 <- read.xlsx2("data/UN_MigrantStockByOriginAndDestination_2013.xls",
+                       sheetName = "Table 10",
+                       startRow = 16, colIndex = c(2, 4 , 10:241),
+                       colClasses = c("character", rep("numeric", 232)))
+wmap <- readShapeSpatial("data/110m_cultural/ne_110m_admin_0_countries.shp")
+places <- read.csv("data/cities1000.csv", header=FALSE, stringsAsFactors=FALSE)
 ```
 
 --- .class #id bg:#F0F0F0
 
 ## 3 | Data processing
 
-With some processing, a data-frame with all computed connections is created. Following is an example for Australia:
+* With some processing, a data-frame with the required arc connections is created. Following is an example a section of the dataframe for Australia
 
 ```{r data-display, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 #* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -172,14 +164,12 @@ m2013 <- melt(data2013.sub, c("newname", "ISOCODE"),
               variable.name = "variable",
               value.name = "STOCK")
 names(m2013) <- c("newname", "ISOCODE", "variable", "STOCK")
-# head(m2013,12); tail(m2013)
 #force na
 m2013[m2013 == "NaN"] = NA
 m2013[m2013 == ""] = NA
 m2013 <- m2013[!is.na(m2013$STOCK),]
 #force numeric
 m2013$STOCK <- as.numeric(m2013$STOCK)
-
 #* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 #*     Merge with country details
 #* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -189,7 +179,6 @@ m2013.merged <- m2013.merged[,c(1,2,4,6,7,10,11)]
 names(m2013.merged) <- c("source", "destination", "stock", "lat.d", "lon.d", "lat.s", "lon.s")
 #m2013.merged <- m2013.merged[m2013.merged$stock > 0,]
 m2013.merged$stocklog <- log(m2013.merged$stock)
-
 places.df <- data.frame (as.numeric(places$V6), as.numeric(places$V5),
                          places$V9, as.numeric(places$V15), places$V2)
 names(places.df) <- c('lon', "lat", "code", "pop", "name")
@@ -198,8 +187,6 @@ places.df <- places.df[complete.cases(places.df),]
 ##merge regions to match UN data e.g. migrant data in Taiwan (TW) is included
 ##  in China (CN)'s data
 places.df$code[places.df$code == "TW"] <- "CN"
-# head(places.df[places.df$name == "Kyoto",])
-# unique(places.df$code)
 #remove places with <1000 population
 places.df <- places.df[places.df$pop > 1000,]
 #get top 15 cities only
@@ -215,8 +202,8 @@ cities.count <- ddply(places.df, c("code"), function(xdf) {
   return(data.frame(count = nrow(xdf)))
 })
 myCountries <- c("AU")
-# allCountries <- unique(m2013.merged$destination)
-m2013.merged.sub <- m2013.merged[m2013.merged$destination == myCountries | m2013.merged$source == myCountries,]
+m2013.merged.sub <- m2013.merged[m2013.merged$destination == myCountries
+                                 | m2013.merged$source == myCountries,]
 m2013.merged.sub <- m2013.merged.sub[m2013.merged.sub$stock > 0,]
 m2013.merged.sub$stocklog <- round(m2013.merged.sub$stocklog,0)
 m2013.merged.sub$source <- as.character(m2013.merged.sub$source)
@@ -230,23 +217,20 @@ m2013.final <- ddply(m2013.merged.sub, c("id"), function(ydf) {
       data <- rbind(data, ydf)
     }
     return(data)
-    #return(replaceCities(data))
   }
 })
-head(m2013.final, 5)
-tail(m2013.final, 5)
+head(m2013.final, 8)
 ```
 
-In the next step, the repeating coordinates are replaced with locations of cities in the region.
+* In the next step, the source and destination coordinates are replaced with locations of cities in the from the country or region.
 
 --- .class #id bg:#F0F0F0
 
-## 4 | Selecting origin and destination points
-To select the location, the data is sorted by location and the ```getRandomCity``` function retrieves a data-frame with the specified number of cities in the selected region with probability of selection based on population.
+## 4 | Migrant origin and destination points
 
-```{r random-city, eval=FALSE}
-sample(c(1:nrow(allCities)), num, replace=TRUE, prob=allCities$pop)
-```
+* The coordinates for each origin or destination in a region are sampled from 15 most populated cities in that region with probability based on the population.
+
+* Since the sampling is done at random, the map generated each time is different.
 
 <center>![More populated cities are more likely to get selected](pictures/australia.jpg)</center>
 <center><small>Cities with higher population are more likely to get selected</small></center>
@@ -255,7 +239,7 @@ sample(c(1:nrow(allCities)), num, replace=TRUE, prob=allCities$pop)
 
 ## 5 | Generating the final map
 
-Finally the arc segments from obtained using ```gcIntermediate``` function are and plotted using ```ggplot2```.
+* Finally the great circle arcs obtained using ```gcIntermediate``` function are and plotted using ```ggplot2``` over the world map.
 
 ```{r final-plot, fig.height=5, fig.width=10, fig.align='center', message=FALSE, echo=FALSE, warning=FALSE}
 count <- nrow(m2013.final)
@@ -302,9 +286,8 @@ ggplot() +
   geom_polygon(aes(long,lat,group=group), 
                size = 0.04, fill=NA, colour = outline.couleur,
                data=wmap_df, alpha=0.5) + #country boundary
-  #colindex <- round( (fsub[j,]$cnt / maxcnt) * length(colors) )
     geom_line(aes(long, lat, group=group, col=order),
-              data=cgc.ff, alpha = alpha, size= size) + #drawing great circle lines works .02,.03
+              data=cgc.ff, alpha = alpha, size= size) + #drawing great circle lines
   scale_colour_gradient2(high=destination.couleur, low=source.couleur,
                          mid=mid.couleur, midpoint=arc.nombre/2,
                          name="Flow legend",
@@ -334,7 +317,4 @@ guides(alpha = "none") +
 
 <center><small>An example plot for Australia with 'light' map theme</small></center>
 
-Try it yourself at https://asheshwor.shinyapps.io/migrationviz/
-
-**Thank you!**
-
+<center>Try the app at https://asheshwor.shinyapps.io/migrationviz/</center>
