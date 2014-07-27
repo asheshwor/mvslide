@@ -32,7 +32,7 @@ knit        : slidify::knit2slides
 
 * The migration data was obtained from [United Nations, Department of Economic and Social Affairs, Population Division] (http://esa.un.org/unmigration/TIMSA2013/data/UN_MigrantStock_2013.xls)
 
-* The world map shape file was obtained from [NaturalEarthData.com] (naturalearthdata.com). The location and population of cities were obtained from the cities database at [geonames.org] (geonames.org)
+* The world map shape file was obtained from [NaturalEarthData.com] (http://www.naturalearthdata.com/). The location and population of cities were obtained from the cities database at [geonames.org] (http://www.geonames.org/)
 
 * Code for reading migration data, world map shape file and cities database:
 
