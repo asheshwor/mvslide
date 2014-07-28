@@ -222,7 +222,7 @@ m2013.final <- ddply(m2013.merged.sub, c("id"), function(ydf) {
 head(m2013.final, 8)
 ```
 
-* In the next step, the source and destination coordinates are replaced with locations of cities in the from the country or region.
+* In the next step, the source and destination coordinates are replaced with locations of cities from the country or region.
 
 --- .class #id bg:#F0F0F0
 

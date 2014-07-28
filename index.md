@@ -65,7 +65,7 @@ places <- read.csv("data/cities1000.csv", header=FALSE, stringsAsFactors=FALSE)
 ## 8     AE          AU  5890   -27   133  24.0  54.0        9  2
 ```
 
-* In the next step, the source and destination coordinates are replaced with locations of cities in the from the country or region.
+* In the next step, the source and destination coordinates are replaced with locations of cities from the country or region.
 
 --- .class #id bg:#F0F0F0
 
